@@ -1,4 +1,4 @@
-package com.itheima.reggie.entity;
+package top.dudada.reggie.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
