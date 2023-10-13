@@ -2,10 +2,10 @@ package top.dudada.reggie.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.stereotype.Service;
-import top.dudada.reggie.entity.Employee;
-
+import top.dudada.reggie.entity.Dish;
 
 @Service
-public interface EmployeeService extends IService<Employee> {
+public interface DishService extends IService<Dish> {
+
 
 }

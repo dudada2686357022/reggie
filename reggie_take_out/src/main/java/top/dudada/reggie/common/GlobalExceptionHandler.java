@@ -48,4 +48,13 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(CustomException.class)
+    public R<String> exceptionHandler(CustomException ex){
+//        打印错误日志
+        log.error(ex.getMessage());
+
+        return R.error(ex.getMessage());
+    }
+
+
 }
