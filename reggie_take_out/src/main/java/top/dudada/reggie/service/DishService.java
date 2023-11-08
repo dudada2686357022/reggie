@@ -9,6 +9,13 @@ import top.dudada.reggie.entity.Dish;
 public interface DishService extends IService<Dish> {
 
 //    新增菜品，同时插入菜品对应的口味数据，需要操作两张表 dish和dish_flavor
-    public void saveWithFlavor(DishDto dishDto);
+     void saveWithFlavor(DishDto dishDto);
+
+     //根据ID获取菜品基本信息
+     DishDto getByIdWithFlavor(Long id);
+
+//     修改菜品
+     void  updateWithFlavor(DishDto dishDto);
+
 
 }
