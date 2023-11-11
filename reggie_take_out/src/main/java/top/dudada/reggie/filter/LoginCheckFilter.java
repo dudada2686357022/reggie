@@ -43,7 +43,9 @@ public class LoginCheckFilter implements Filter {
                 "/employee/logout",
                 "/backend/**",
                 "/front/**",
-                "/common/**"
+                "/common/**",
+                "/user/sendMsg", //移动端发送短信
+                "/user/login"  //移动端登入
 
         };
 
@@ -55,13 +57,26 @@ public class LoginCheckFilter implements Filter {
             return;
         }
 
-//        4.判断登入状态,如果已登入,则直接放行
+//        4-1.判断登入状态,如果已登入,则直接放行
         if (request.getSession().getAttribute("employee")!=null){
 
 //          从获取session获取用户ID
             Long employeeId =(Long) request.getSession().getAttribute("employee");
 //          将获取到的用户ID存入自定义工具类BaseContext中(存到ThreadLocal中)
             BaseContext.setCurrentId(employeeId);
+
+            filterChain.doFilter(request,response);
+
+            return;
+        }
+
+        //        4-2.判断登入状态,如果已登入,则直接放行
+        if (request.getSession().getAttribute("user")!=null){
+
+//          从获取session获取用户ID
+            Long userId =(Long) request.getSession().getAttribute("employee");
+//          将获取到的用户ID存入自定义工具类BaseContext中(存到ThreadLocal中)
+            BaseContext.setCurrentId(userId);
 
             filterChain.doFilter(request,response);
 
