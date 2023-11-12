@@ -74,7 +74,7 @@ public class LoginCheckFilter implements Filter {
         if (request.getSession().getAttribute("user")!=null){
 
 //          从获取session获取用户ID
-            Long userId =(Long) request.getSession().getAttribute("employee");
+            Long userId =(Long) request.getSession().getAttribute("user");
 //          将获取到的用户ID存入自定义工具类BaseContext中(存到ThreadLocal中)
             BaseContext.setCurrentId(userId);
 

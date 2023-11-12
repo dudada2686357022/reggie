@@ -38,7 +38,7 @@ public class UserController {
 
         if (StringUtils.isNotEmpty(phone)){
             String code = ValidateCodeUtils.generateValidateCode(4).toString();
-            SMSUtils.sendMessage("瑞吉外卖","",phone,code);
+//            SMSUtils.sendMessage("瑞吉外卖","",phone,code);
             System.out.println("验证码："+code);
             session.setAttribute(phone,code);
             return R.success("手机验证码发送成功");
