@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import top.dudada.reggie.common.R;
 import top.dudada.reggie.dto.DishDto;
@@ -15,6 +16,7 @@ import top.dudada.reggie.service.DishFlavorService;
 import top.dudada.reggie.service.DishService;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @RestController
@@ -29,6 +31,9 @@ public class DishController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
 
     /**
@@ -151,6 +156,18 @@ public class DishController {
     @GetMapping("/list")
     public R<List<DishDto>> list(Dish dish){
 
+        List<DishDto> dishDtoList=null;
+//        动态构造Key
+        String key ="dish_"+dish.getCategoryId()+"_"+dish.getStatus();//dish_13964464684684_1
+//        先从redis中获取缓存数据
+        dishDtoList =(List<DishDto>) redisTemplate.opsForValue().get(key);
+//        判断是否存在缓存数据
+        if (dishDtoList!=null){
+//            以缓存数据
+            return R.success(dishDtoList);
+        }
+
+
 //        构造查询条件
         LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(dish.getCategoryId()!=null,Dish::getCategoryId,dish.getCategoryId());
@@ -161,7 +178,7 @@ public class DishController {
 
         List<Dish> list = dishService.list(queryWrapper);
 
-        List<DishDto> dishDtoList = list.stream().map((item) -> {
+         dishDtoList = list.stream().map((item) -> {
             DishDto dishDto = new DishDto();
 
             BeanUtils.copyProperties(item, dishDto);
@@ -184,6 +201,10 @@ public class DishController {
 
             return dishDto;
         }).collect(Collectors.toList());
+
+
+//         如果数据不存在，需要查询数据库，将查询到的菜品数据缓存到Redis中,时间：60min
+        redisTemplate.opsForValue().set(key,dishDtoList,60, TimeUnit.MINUTES);
 
 
         return R.success(dishDtoList);
