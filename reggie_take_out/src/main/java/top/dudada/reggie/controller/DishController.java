@@ -16,6 +16,7 @@ import top.dudada.reggie.service.DishFlavorService;
 import top.dudada.reggie.service.DishService;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -44,7 +45,20 @@ public class DishController {
     @PostMapping
     public R<String> save(@RequestBody DishDto dishDto){
         dishService.saveWithFlavor(dishDto);
+
+//     修改菜品数据时清除所有菜品的缓存数据
+        Set keys = redisTemplate.keys("dish_*");
+        redisTemplate.delete(keys);
+
+
+//        清理某个分类下面的菜品缓存数据
+//        String key = "dish_" + dishDto.getCategoryId() + "_1";
+//        redisTemplate.delete(keys);
+
+
+
         return R.success("新增菜品成功");
+
     }
 
 
@@ -119,7 +133,16 @@ public class DishController {
     @PutMapping
     public R<String> update(@RequestBody  DishDto dishDto){
       dishService.updateWithFlavor(dishDto);
-      return R.success("修改菜品成功");
+
+//     修改菜品数据时清除所有菜品的缓存数据
+        Set keys = redisTemplate.keys("dish_*");
+        redisTemplate.delete(keys);
+
+
+//        清理某个分类下面的菜品缓存数据
+//        String key = "dish_" + dishDto.getCategoryId() + "_1";
+//        redisTemplate.delete(keys);
+        return R.success("修改菜品成功");
     }
 
 
